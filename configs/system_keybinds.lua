@@ -247,7 +247,7 @@ bind("SUPER SHIFT", "F", dispatch("fullscreen", ""), { description = "fullscreen
 bind("SUPER", "F", dispatch("fullscreen", "1"), { description = "maximize window" })
 bind("SUPER", "SPACE", dispatch("togglefloating", ""), { description = "Float current window" })
 bind("SUPER ALT", "SPACE", exec_cmd("$HOME/.config/hypr/scripts/Float-all-Windows.sh"), { description = "Float all windows" })
-bind("SUPER SHIFT", "Return", exec_cmd("$HOME/.config/hypr/scripts/Dropterminal.sh kitty"), { description = "DropDown terminal" })
+bind("SUPER SHIFT", "Return", exec_cmd("$HOME/.config/hypr/scripts/Dropterminal.sh alacritty"), { description = "DropDown terminal" })
 bind("SUPER ALT", "mouse_down", exec_cmd("hyprctl keyword cursor:zoom_factor \"$(hyprctl getoption cursor:zoom_factor | awk 'NR==1 {factor = $2; if (factor < 1) {factor = 1}; print factor * 2.0}')\""), { description = "zoom in" })
 bind("SUPER ALT", "mouse_up", exec_cmd("hyprctl keyword cursor:zoom_factor \"$(hyprctl getoption cursor:zoom_factor | awk 'NR==1 {factor = $2; if (factor < 1) {factor = 1}; print factor / 2.0}')\""), { description = "zoom out" })
 bind("SUPER CTRL ALT", "B", exec_cmd("pkill -SIGUSR1 waybar"), { description = "toggle waybar on/off" })

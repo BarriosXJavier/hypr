@@ -9,6 +9,12 @@ STATE_FILE="/tmp/popup_browser_state"
 ADDR_FILE="/tmp/popup_browser_addr"
 
 clients() { hyprctl clients -j 2>/dev/null; }
+error() {
+  local message="$1"
+  printf 'Popup browser: %s\n' "$message" >&2
+  command -v notify-send >/dev/null 2>&1 &&
+    notify-send -u critical "Popup browser" "$message" 2>/dev/null || true
+}
 valid_address() {
   local addr="${1:-}"
   [[ -n "$addr" ]] && clients | jq -e --arg addr "$addr" 'any(.[]; .address == $addr)' >/dev/null
@@ -23,6 +29,13 @@ new_address() {
   after="$(clients)"
   candidate=$(comm -13 <(jq -r '.[].address' <<< "$before" | sort) <(jq -r '.[].address' <<< "$after" | sort) | head -n 1)
   printf '%s' "$candidate"
+}
+active_new_address() {
+  local excluded="${1:-}" active
+  active="$(hyprctl activewindow -j 2>/dev/null || true)"
+  jq -r --arg excluded "$excluded" \
+    'select(.address != $excluded) | .address // empty' \
+    <<< "$active"
 }
 monitor_geometry() {
   hyprctl monitors -j 2>/dev/null | jq -r \
@@ -66,17 +79,34 @@ if [[ -z "$url" ]]; then
   exit 0
 fi
 
+previous_addr="$addr"
 before="$(clients)"
 if [[ -n "$addr" ]]; then
   # One popup only: replace the previous app window with the newly requested URL.
   hyprctl dispatch closewindow "address:$addr" >/dev/null 2>&1 || true
+  # closewindow is asynchronous.  Do not launch the replacement while the old
+  # app window is still registered, or the default handler may reuse its client/address.
+  for _ in {1..30}; do
+    valid_address "$addr" || break
+    sleep 0.1
+  done
   rm -f "$ADDR_FILE"
   echo hidden > "$STATE_FILE"
 fi
 before="$(clients)"
-brave-browser --new-window --app="$url" >/dev/null 2>&1 &
-for _ in {1..40}; do
+if ! command -v xdg-open >/dev/null 2>&1; then
+  error "Could not find xdg-open to open the URL"
+  exit 1
+fi
+if ! xdg-open "$url" >/dev/null 2>&1; then
+  error "The system could not open the URL"
+  exit 1
+fi
+for _ in {1..60}; do
   addr="$(new_address "$before")"
+  [[ -n "$addr" ]] && break
+  # The default handler can focus the new client before it appears in the diff.
+  addr="$(active_new_address "$previous_addr")"
   [[ -n "$addr" ]] && break
   sleep 0.1
 done
@@ -85,5 +115,5 @@ if [[ -n "$addr" ]]; then
   hyprctl dispatch movetoworkspacesilent "$SPECIAL_WS,address:$addr" >/dev/null
   show "$addr"
 else
-  notify-send -u normal "Popup browser" "Could not find the new Brave window" 2>/dev/null || true
+  error "The system opened the URL, but Hyprland could not find its new window"
 fi

@@ -23,7 +23,7 @@ STATE_FILE="/tmp/dropdown_terminal_state"
 LOCK_FILE="/tmp/dropdown_terminal_lock"
 LAST_TOGGLE_FILE="/tmp/dropdown_terminal_last_toggle"
 MIN_TOGGLE_INTERVAL_MS=250
-DROPDOWN_KITTY_CLASS="kitty-dropterm"
+DROPDOWN_TERM_CLASS="alacritty-dropterm"
 CONFIG_HOME="${XDG_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
 HYPR_DIR="$CONFIG_HOME/hypr"
 LUA_ENTRY="$HYPR_DIR/hyprland.lua"
@@ -165,8 +165,8 @@ while [ $# -gt 0 ]; do
 done
 
 TERMINAL_CMD="$*"
-if [[ "$TERMINAL_CMD" == kitty* ]] && [[ "$TERMINAL_CMD" != *"--class"* ]] && [[ "$TERMINAL_CMD" != *"--name"* ]] && [[ "$TERMINAL_CMD" != *"--app-id"* ]]; then
-  TERMINAL_CMD="$TERMINAL_CMD --class $DROPDOWN_KITTY_CLASS --app-id $DROPDOWN_KITTY_CLASS"
+if [[ "$TERMINAL_CMD" == alacritty* ]] && [[ "$TERMINAL_CMD" != *"--class"* ]]; then
+  TERMINAL_CMD="$TERMINAL_CMD --class $DROPDOWN_TERM_CLASS"
 fi
 
 # Ensure only one instance runs at a time (prevents overlapping animations)
@@ -504,7 +504,7 @@ get_terminal_address() {
 
 # Try to find an existing dropdown terminal by class (kitty only)
 find_terminal_by_class() {
-  hyprctl clients -j 2>/dev/null | jq -r --arg CLASS "$DROPDOWN_KITTY_CLASS" \
+  hyprctl clients -j 2>/dev/null | jq -r --arg CLASS "$DROPDOWN_TERM_CLASS" \
     '.[] | select((.class == $CLASS) or (.initialClass == $CLASS)) | .address' | head -1
 }
 
@@ -759,7 +759,7 @@ spawn_terminal() {
   for _ in $(seq 1 20); do
     local windows_after=$(hyprctl clients -j)
     local recovered
-    recovered=$(echo "$windows_after" | jq -r --arg CLASS "$DROPDOWN_KITTY_CLASS" \
+    recovered=$(echo "$windows_after" | jq -r --arg CLASS "$DROPDOWN_TERM_CLASS" \
       '.[] | select((.class == $CLASS) or (.initialClass == $CLASS)) | .address' | head -1)
     if [ -n "$recovered" ] && [ "$recovered" != "null" ]; then
       new_addr="$recovered"

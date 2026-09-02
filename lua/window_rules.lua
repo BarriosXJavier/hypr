@@ -114,7 +114,7 @@ apply_window_rule({
 apply_window_rule({
   name = "tag-terminal-emulators",
   match = {
-    class = "^(ghostty|wezterm|Alacritty|kitty|kitty-dropterm)$",
+    class = "^(ghostty|wezterm|Alacritty|kitty|alacritty-dropterm)$",
   },
   tag = "+terminal",
 })
@@ -1104,7 +1104,7 @@ apply_window_rule({
 apply_window_rule({
   name = "dropterminal",
   match = {
-    class = "kitty-dropterm",
+    class = "alacritty-dropterm",
   },
   float = true,
 })

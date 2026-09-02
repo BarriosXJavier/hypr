@@ -57,8 +57,7 @@ local startup_commands = {
   "qs -c overview",
   "hypridle",
   scriptsDir .. "/Hyprsunset.sh init",
-  -- NOTE: Dropterminal is currently certified only with kitty. Not all terminals behave correctly as a dropdown.
-  scriptsDir .. "/Dropterminal.sh --startup kitty",
+  scriptsDir .. "/Dropterminal.sh --startup alacritty",
   "wl-paste --type text --watch cliphist store",
   "wl-paste --type image --watch cliphist store",
 }
