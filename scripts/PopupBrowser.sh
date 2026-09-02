@@ -44,10 +44,10 @@ configure_window() {
   hyprctl dispatch setprop "address:$addr" alpha 0.94 >/dev/null 2>&1 || true
 }
 show() {
-  local addr="$1"
-  if [[ "$(cat "$STATE_FILE" 2>/dev/null || true)" != shown ]]; then
-    hyprctl dispatch togglespecialworkspace scratchpad >/dev/null
-  fi
+  local addr="$1" current_workspace
+  current_workspace="$(hyprctl activeworkspace -j 2>/dev/null | jq -r '.id // empty')"
+  [[ "$current_workspace" =~ ^-?[0-9]+$ ]] || return 1
+  hyprctl dispatch movetoworkspacesilent "$current_workspace,address:$addr" >/dev/null
   configure_window "$addr"
   hyprctl dispatch focuswindow "address:$addr" >/dev/null
   echo shown > "$STATE_FILE"
@@ -58,7 +58,7 @@ url="${1:-}"
 if [[ -z "$url" ]]; then
   [[ -n "$addr" ]] || exit 0
   if [[ "$(cat "$STATE_FILE" 2>/dev/null || true)" == shown ]]; then
-    hyprctl dispatch togglespecialworkspace scratchpad >/dev/null
+    hyprctl dispatch movetoworkspacesilent "$SPECIAL_WS,address:$addr" >/dev/null
     echo hidden > "$STATE_FILE"
   else
     show "$addr"
