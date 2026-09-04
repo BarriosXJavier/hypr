@@ -7,6 +7,7 @@ BROWSER_CLASS_PATTERN='^brave-.*-Default$'
 
 STATE_FILE="/tmp/nvim-docs-state"
 ADDR_FILE="/tmp/nvim-docs-address"
+ORIGIN_ADDR_FILE="/tmp/nvim-docs-origin-address"
 
 clients() {
     hyprctl clients -j 2>/dev/null
@@ -43,6 +44,19 @@ stored_address() {
 current_workspace() {
     hyprctl activeworkspace -j 2>/dev/null |
         jq -r '.id // empty'
+}
+
+active_window() {
+    hyprctl activewindow -j 2>/dev/null |
+        jq -r '.address // empty'
+}
+
+focus_window() {
+    local addr="$1"
+
+    [[ -n "$addr" ]] || return 0
+    valid_address "$addr" || return 0
+    hyprctl dispatch focuswindow "address:$addr" >/dev/null 2>&1 || true
 }
 
 move_to_workspace() {
@@ -85,6 +99,7 @@ show() {
     valid_address "$addr" || return 1
 
     move_to_workspace "$workspace" "$addr"
+    focus_window "$addr"
 
     echo shown > "$STATE_FILE"
 }
@@ -99,6 +114,7 @@ hide() {
     fi
 
     move_to_workspace "$SPECIAL_WS" "$addr"
+    focus_window "$(cat "$ORIGIN_ADDR_FILE" 2>/dev/null || true)"
 
     echo hidden > "$STATE_FILE"
 }
@@ -180,6 +196,10 @@ fi
 
 
 # URL supplied: create a new app window.
+origin_addr="$(active_window)"
+if [[ -n "$origin_addr" ]]; then
+    printf '%s' "$origin_addr" > "$ORIGIN_ADDR_FILE"
+fi
 old_addr="$addr"
 
 addr="$(create_browser "$url")" || {
