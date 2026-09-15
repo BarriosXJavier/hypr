@@ -175,11 +175,30 @@ local function dispatch(name, args)
       return function()
         local win = hl.get_active_window and hl.get_active_window()
         local ws = win and win.workspace
-        -- If active window is already in a special workspace, move it back to the current active regular workspace
-        if ws and (ws.special == true or (type(ws.name) == "string" and ws.name:match("^special"))) then
+        local is_special = ws and (ws.special == true or (type(ws.name) == "string" and ws.name:match("^special")))
+        local same_special = false
+        if is_special then
+          local current_name = type(ws.name) == "string" and ws.name or "special"
+          local target_name = args == "special" and "special" or args
+          same_special = current_name == target_name
+            or current_name == target_name:gsub("^special:", "")
+        end
+        -- Moving within special workspaces should target the requested one.
+        -- Only moving to the special workspace already containing the window
+        -- acts as the move-out toggle.
+        if same_special then
           local mon = hl.get_active_monitor and hl.get_active_monitor()
-          local active_ws = hl.get_active_workspace and hl.get_active_workspace(mon and mon.id)
-          local target_id = (active_ws and not active_ws.special and active_ws.id) or "+0"
+          -- While a special workspace is shown, get_active_workspace() may
+          -- resolve to that special workspace.  The monitor keeps the regular
+          -- workspace underneath it separately; use that as the destination.
+          local regular_ws = mon and mon.active_workspace
+          if not regular_ws then
+            regular_ws = hl.get_active_workspace and hl.get_active_workspace(mon and mon.id)
+          end
+          if not regular_ws or regular_ws.special then
+            return
+          end
+          local target_id = regular_ws.id
           if window_api.move then
             hl.dispatch(window_api.move({ workspace = target_id }))
           else
@@ -297,7 +316,7 @@ local function dispatch(name, args)
       return function()
         dispatch_factory_safely(function()
           if args ~= "" then
-            return workspace_api.toggle_special({ name = args })
+            return workspace_api.toggle_special(args:gsub("^special:", ""))
           end
           return workspace_api.toggle_special()
         end)

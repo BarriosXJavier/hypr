@@ -215,10 +215,30 @@ local function dispatch(name, args)
       return function()
         local win = hl.get_active_window and hl.get_active_window()
         local ws = win and win.workspace
-        if ws and (ws.special == true or (type(ws.name) == "string" and ws.name:match("^special"))) then
+        local is_special = ws and (ws.special == true or (type(ws.name) == "string" and ws.name:match("^special")))
+        local same_special = false
+        if is_special then
+          local current_name = type(ws.name) == "string" and ws.name or "special"
+          local target_name = args == "special" and "special" or args
+          same_special = current_name == target_name
+            or current_name == target_name:gsub("^special:", "")
+        end
+        -- Moving within special workspaces should target the requested one.
+        -- Only moving to the special workspace already containing the window
+        -- acts as the move-out toggle.
+        if same_special then
           local mon = hl.get_active_monitor and hl.get_active_monitor()
-          local active_ws = hl.get_active_workspace and hl.get_active_workspace(mon and mon.id)
-          local target_id = (active_ws and not active_ws.special and active_ws.id) or "+0"
+          -- While a special workspace is shown, get_active_workspace() may
+          -- resolve to that special workspace.  The monitor keeps the regular
+          -- workspace underneath it separately; use that as the destination.
+          local regular_ws = mon and mon.active_workspace
+          if not regular_ws then
+            regular_ws = hl.get_active_workspace and hl.get_active_workspace(mon and mon.id)
+          end
+          if not regular_ws or regular_ws.special then
+            return
+          end
+          local target_id = regular_ws.id
           if window_api.move then
             hl.dispatch(window_api.move({ workspace = target_id }))
           else
@@ -249,7 +269,8 @@ local function dispatch(name, args)
     local workspace_api = (dsp and dsp.workspace) or {}
     if workspace_api.toggle_special then
       return function()
-        local ok, dispatcher = pcall(workspace_api.toggle_special, args ~= "" and { name = args } or nil)
+        local special_name = args ~= "" and args:gsub("^special:", "") or nil
+        local ok, dispatcher = pcall(workspace_api.toggle_special, special_name)
         if ok and dispatcher then
           hl.dispatch(dispatcher)
         end
@@ -950,6 +971,10 @@ bind(
 )
 bind("SUPER SHIFT", "U", dispatch("movetoworkspace", "special"), { description = "move to special workspace" })
 bind("SUPER", "U", dispatch("togglespecialworkspace", ""), { description = "toggle special workspace" })
+bind("SUPER", "Y", dispatch("togglespecialworkspace", "special:secondary"), { description = "toggle secondary special workspace" })
+bind("SUPER", "V", dispatch("togglespecialworkspace", "special:tertiary"), { description = "toggle tertiary special workspace" })
+bind("SUPER SHIFT", "Y", dispatch("movetoworkspace", "special:secondary"), { description = "move in/out of secondary special workspace" })
+bind("SUPER SHIFT", "V", dispatch("movetoworkspace", "special:tertiary"), { description = "move in/out of tertiary special workspace" })
 bind("SUPER", "code:10", dispatch("workspace", "1"), { description = "workspace 1" })
 bind("SUPER", "code:11", dispatch("workspace", "2"), { description = "workspace 2" })
 bind("SUPER", "code:12", dispatch("workspace", "3"), { description = "workspace 3" })

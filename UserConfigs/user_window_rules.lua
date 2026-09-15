@@ -49,6 +49,27 @@ do
 end
 local apply_window_rule = user_window_rules_helper.apply_window_rule
 
+-- Color-code special workspaces so their contents remain recognizable while
+-- peeking. Workspace rules themselves do not expose per-workspace colors.
+apply_window_rule({
+  name = "special-default-identity",
+  match = { workspace = "special" },
+  border_color = "rgba(8db4ffff)",
+  border_size = 4,
+})
+apply_window_rule({
+  name = "special-secondary-identity",
+  match = { workspace = "special:secondary" },
+  border_color = "rgba(6cb6ffff)",
+  border_size = 4,
+})
+apply_window_rule({
+  name = "special-tertiary-identity",
+  match = { workspace = "special:tertiary" },
+  border_color = "rgba(ffb86cff)",
+  border_size = 4,
+})
+
 -- Converted from WindowRules.conf
 apply_window_rule({
   name = "Nvim Docs Popup",

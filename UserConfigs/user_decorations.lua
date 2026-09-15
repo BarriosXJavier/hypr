@@ -26,7 +26,8 @@ hl.config({
     fullscreen_opacity = 1.0,
     dim_inactive = false,
     dim_strength = 0.01,
-    dim_special = 0.0,
+    -- Keep special workspaces visually distinct from regular workspaces.
+    dim_special = 0.3,
     shadow = {
       enabled = true,
       range = 1,
@@ -34,8 +35,8 @@ hl.config({
     },
     blur = {
       enabled = true,
-      size = 2,
-      passes = 1,
+      size = 4,
+      passes = 2,
       new_optimizations = true,
       xray = true,
       ignore_opacity = true,
