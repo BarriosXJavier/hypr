@@ -11,6 +11,24 @@ SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
 UserScripts=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/UserScripts
 QS_TEXTINPUT_LOG_RULE="qt.qpa.wayland.textinput.warning=false"
 
+# Refresh can be invoked by several bar actions and keybinds.  A rapid burst
+# used to stop/start Waybar repeatedly, which made the desktop look frozen and
+# created a large amount of avoidable I/O.  Serialize refreshes and ignore
+# repeats for a short period; one deliberate refresh is still performed.
+runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+mkdir -p "$runtime_dir" 2>/dev/null || true
+refresh_lock="$runtime_dir/kooldots-refresh.lock"
+exec 9>"$refresh_lock"
+flock -n 9 || exit 0
+
+refresh_stamp="$runtime_dir/kooldots-refresh.last"
+now="$(date +%s)"
+last="$(cat "$refresh_stamp" 2>/dev/null || true)"
+if [[ "$last" =~ ^[0-9]+$ ]] && (( now - last < 8 )); then
+  exit 0
+fi
+printf '%s\n' "$now" >"$refresh_stamp"
+
 # Define file_exists function
 file_exists() {
   if [ -e "$1" ]; then

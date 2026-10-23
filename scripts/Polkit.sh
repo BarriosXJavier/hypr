@@ -12,17 +12,6 @@ if pgrep -u "$UID" -f 'xfce-polkit|polkit-gnome-authentication-agent-1|polkit-kd
   exit 0
 fi
 
-# If hyprpolkitagent is managed as a user service, defer to systemd.
-# This avoids race conditions where both this script and systemd start an
-# agent at the same time, which can trigger "authentication agent already exists"
-# DBus registration errors on first login.
-if command -v systemctl >/dev/null 2>&1; then
-  if systemctl --user list-unit-files 2>/dev/null | grep -q '^hyprpolkitagent\.service'; then
-    systemctl --user start hyprpolkitagent.service >/dev/null 2>&1 || true
-    exit 0
-  fi
-fi
-
 # Ensure Qt apps default to Wayland in a Wayland session
 if [ -n "${WAYLAND_DISPLAY:-}" ] && [ -z "${QT_QPA_PLATFORM:-}" ]; then
   export QT_QPA_PLATFORM=wayland
@@ -44,11 +33,10 @@ elif [ -z "${QT_STYLE_OVERRIDE:-}" ]; then
   export QT_STYLE_OVERRIDE=Fusion
 fi
 
-# List of potential Polkit agent file paths (preferred order)
+# List of potential Polkit agent file paths (preferred order). The packaged
+# Hyprland agent is broken here because org.hyprland.style is not installed.
 polkit=(
-  "/usr/libexec/hyprpolkitagent"
-  "/usr/lib/hyprpolkitagent"
-  "/usr/lib/hyprpolkitagent/hyprpolkitagent"
+  "/usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1"
   "/usr/bin/xfce-polkit"
   "/usr/lib/xfce4/polkit-agent/xfce-polkit"
   "/usr/libexec/xfce-polkit"
@@ -59,8 +47,6 @@ polkit=(
   "/usr/lib/polkit-mate/polkit-mate-authentication-agent-1"
   "/usr/bin/polkit-mate-authentication-agent-1"
   "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
-  "/usr/lib/polkit-kde-authentication-agent-1"
-  "/usr/libexec/polkit-kde-authentication-agent-1"
 )
 
 executed=false
@@ -69,6 +55,10 @@ executed=false
 for file in "${polkit[@]}"; do
   if [ -e "$file" ] && [ ! -d "$file" ]; then
     echo "Found: $file — executing..."
+    export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland}"
+    export GDK_BACKEND="${GDK_BACKEND:-wayland}"
+    export QT_QUICK_CONTROLS_STYLE="${QT_QUICK_CONTROLS_STYLE:-Basic}"
+    export QT_STYLE_OVERRIDE="${QT_STYLE_OVERRIDE:-Fusion}"
     exec "$file"
     executed=true
     break

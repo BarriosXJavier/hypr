@@ -81,3 +81,11 @@ apply_window_rule({
   move = "17.5% 5%",
   no_initial_focus = true,
 })
+
+-- Zero app blur/transparency: keep all application windows fully opaque.
+apply_window_rule({
+  name = "apps-no-blur-no-transparency",
+  match = { class = ".*" },
+  no_blur = true,
+  opacity = 1.0,
+})

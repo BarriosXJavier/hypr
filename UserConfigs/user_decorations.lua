@@ -21,22 +21,22 @@ hl.config({
   },
   decoration = {
     rounding = 5,
-    active_opacity = 0.99,
-    inactive_opacity = 0.97,
+    active_opacity = 1.0,
+    inactive_opacity = 1.0,
     fullscreen_opacity = 1.0,
     dim_inactive = false,
     dim_strength = 0.01,
     -- Keep special workspaces visually distinct from regular workspaces.
-    dim_special = 0.3,
+    dim_special = 0.8,
     shadow = {
       enabled = true,
       range = 1,
       render_power = 1,
     },
     blur = {
-      enabled = true,
-      size = 10,
-      passes = 4,
+      enabled = false,
+      size = 0,
+      passes = 0,
       new_optimizations = true,
       xray = true,
       ignore_opacity = true,
