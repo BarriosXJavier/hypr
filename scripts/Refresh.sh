@@ -11,6 +11,11 @@ SCRIPTSDIR=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts
 UserScripts=${XDG_CONFIG_HOME:-$HOME/.config}/hypr/UserScripts
 QS_TEXTINPUT_LOG_RULE="qt.qpa.wayland.textinput.warning=false"
 
+# Theme/layout selectors must be able to force a refresh even when another
+# refresh happened moments earlier.  Other callers retain the short debounce.
+force_refresh=false
+[[ "${1:-}" == "--force" ]] && force_refresh=true
+
 # Refresh can be invoked by several bar actions and keybinds.  A rapid burst
 # used to stop/start Waybar repeatedly, which made the desktop look frozen and
 # created a large amount of avoidable I/O.  Serialize refreshes and ignore
@@ -24,10 +29,18 @@ flock -n 9 || exit 0
 refresh_stamp="$runtime_dir/kooldots-refresh.last"
 now="$(date +%s)"
 last="$(cat "$refresh_stamp" 2>/dev/null || true)"
-if [[ "$last" =~ ^[0-9]+$ ]] && (( now - last < 8 )); then
+if ! $force_refresh && [[ "$last" =~ ^[0-9]+$ ]] && (( now - last < 8 )); then
   exit 0
 fi
 printf '%s\n' "$now" >"$refresh_stamp"
+
+# Release the lock this shell held (fd 9) before any child is spawned.
+# Everything below launches long-lived daemons (ags/quickshell/waybar...);
+# a daemon inheriting fd 9 keeps the flock on it permanently and makes every
+# later Refresh.sh exit silently at `flock -n 9` - the waybar/style/layout
+# pickers then appear to "do nothing". Overlap of concurrent refreshes beyond
+# this point is prevented by the 8s stamp debounce above.
+exec 9>&-
 
 # Define file_exists function
 file_exists() {
@@ -142,7 +155,9 @@ restart_waybar() {
   fi
 
   # Fallback when systemd-run is unavailable: detach as far as we can.
-  setsid /bin/bash -c "$restart_cmd" >/dev/null 2>&1 &
+  # 9>&- keeps the refresh lock fd (and its flock) out of the detached shell -
+  # a lock passed down here would make every later refresh exit silently.
+  setsid /bin/bash -c "$restart_cmd" >/dev/null 2>&1 9>&- &
 }
 
 restart_waybar
@@ -166,21 +181,4 @@ if pgrep -x "nwg-dock-hyprla" >/dev/null 2>&1 || pgrep -x "nwg-dock-hyprland" >/
   "${SCRIPTSDIR}/Dock.sh" --restart >/dev/null 2>&1 &
 fi
 
-# Relaunching rainbow borders based on selected mode
 sleep 1
-rainbow_mode_file="${UserScripts}/rainbow-borders.mode"
-rainbow_mode=""
-if [[ -f "$rainbow_mode_file" ]]; then
-  rainbow_mode="$(tr -d '[:space:]' <"$rainbow_mode_file")"
-fi
-if [[ "$rainbow_mode" == "low_cpu" ]]; then
-  pkill -f 'RainbowBorders-low-cpu\.sh' >/dev/null 2>&1 || true
-  rm -f /tmp/hypr-rainbowborders.lock >/dev/null 2>&1 || true
-  if file_exists "${UserScripts}/RainbowBorders-low-cpu.sh"; then
-    "${UserScripts}/RainbowBorders-low-cpu.sh" >/dev/null 2>&1 &
-  fi
-elif file_exists "${UserScripts}/RainbowBorders.sh"; then
-  "${UserScripts}/RainbowBorders.sh" &
-fi
-
-exit 0

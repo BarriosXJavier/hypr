@@ -172,46 +172,10 @@ local function dispatch(name, args)
   end
   if name == "movetoworkspace" then
     if args == "special" or args:match("^special:") then
-      return function()
-        local win = hl.get_active_window and hl.get_active_window()
-        local ws = win and win.workspace
-        local is_special = ws and (ws.special == true or (type(ws.name) == "string" and ws.name:match("^special")))
-        local same_special = false
-        if is_special then
-          local current_name = type(ws.name) == "string" and ws.name or "special"
-          local target_name = args == "special" and "special" or args
-          same_special = current_name == target_name
-            or current_name == target_name:gsub("^special:", "")
-        end
-        -- Moving within special workspaces should target the requested one.
-        -- Only moving to the special workspace already containing the window
-        -- acts as the move-out toggle.
-        if same_special then
-          local mon = hl.get_active_monitor and hl.get_active_monitor()
-          -- While a special workspace is shown, get_active_workspace() may
-          -- resolve to that special workspace.  The monitor keeps the regular
-          -- workspace underneath it separately; use that as the destination.
-          local regular_ws = mon and mon.active_workspace
-          if not regular_ws then
-            regular_ws = hl.get_active_workspace and hl.get_active_workspace(mon and mon.id)
-          end
-          if not regular_ws or regular_ws.special then
-            return
-          end
-          local target_id = regular_ws.id
-          if window_api.move then
-            hl.dispatch(window_api.move({ workspace = target_id }))
-          else
-            hl.dispatch(dsp.exec_raw("movetoworkspace " .. tostring(target_id)))
-          end
-          return
-        end
-        if window_api.move then
-          hl.dispatch(window_api.move({ workspace = workspace_value(args) }))
-        else
-          hl.dispatch(dsp.exec_raw("movetoworkspace " .. args))
-        end
-      end
+      -- Keep special-workspace semantics in Hyprland itself.  In particular,
+      -- movetoworkspace special[:name] moves a window back to its underlying
+      -- regular workspace when it is already in that special workspace.
+      return raw_dispatch_cmd("movetoworkspace " .. args)
     end
     if window_api.move then
       return function()

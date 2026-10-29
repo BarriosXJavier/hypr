@@ -103,12 +103,6 @@ local app_binds = {
   { "SUPER CTRL", "G", "$HOME/.config/hypr/scripts/Ghostty_themes.sh", "Ghostty theme selector" },
   {
     "SUPER SHIFT",
-    "B",
-    "$HOME/.config/hypr/UserScripts/RainbowBorders-low-cpu.sh  --run-once",
-    "Set static Rainbow Border",
-  },
-  {
-    "SUPER SHIFT",
     "H",
     "$HOME/.config/hypr/scripts/Toggle-Active-Window-Audio.sh",
     "Toggle Mute/Unmute for Active-Window",
@@ -725,8 +719,14 @@ bind(
   exec_cmd("$HOME/.config/hypr/scripts/toggle-qs-hyprview.sh " .. qs_hyprview_layout),
   { description = "Hyprview Toggle" }
 )
-bind("SUPER SHIFT", "U", dispatch("movetoworkspace", "special"), { description = "move to special workspace" })
-bind("SUPER", "U", dispatch("togglespecialworkspace", ""), { description = "toggle special workspace" })
+-- Y/U/V are paired special-workspace keys.  Shift always moves the active
+-- window in or out; the unshifted key shows/hides that special workspace.
+bind("SUPER SHIFT", "Y", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special"), { description = "move to/from special workspace" })
+bind("SUPER", "Y", dispatch("togglespecialworkspace", ""), { description = "toggle special workspace" })
+bind("SUPER SHIFT", "U", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special:secondary"), { description = "move to/from secondary special workspace" })
+bind("SUPER", "U", dispatch("togglespecialworkspace", "special:secondary"), { description = "toggle secondary special workspace" })
+bind("SUPER SHIFT", "V", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special:tertiary"), { description = "move to/from tertiary special workspace" })
+bind("SUPER", "V", dispatch("togglespecialworkspace", "special:tertiary"), { description = "toggle tertiary special workspace" })
 bind("SUPER", "code:10", dispatch("workspace", "1"), { description = "workspace 1" })
 bind("SUPER", "code:11", dispatch("workspace", "2"), { description = "workspace 2" })
 bind("SUPER", "code:12", dispatch("workspace", "3"), { description = "workspace 3" })

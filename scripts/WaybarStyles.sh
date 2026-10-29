@@ -19,7 +19,7 @@ msg=' 🎌 NOTE: Some waybar STYLES NOT fully compatible with some LAYOUTS'
 # Apply selected style
 apply_style() {
     ln -sf "$waybar_styles/$1.css" "$waybar_style"
-    "${SCRIPTSDIR}/Refresh.sh" &
+    "${SCRIPTSDIR}/Refresh.sh" --force &
 }
 
 main() {

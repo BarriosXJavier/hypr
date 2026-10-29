@@ -112,7 +112,11 @@ handle_open() {
         fi
 
         # 3. Ensure DPMS is powered on
-        hyprctl dispatch dpms on "$mon" >> "$LOGFILE" 2>&1 || true
+        # Lua build rejects raw string dispatchers from hyprctl; route legacy
+        # commands through hl.dsp.exec_raw and keep the raw form as fallback.
+        if ! hyprctl eval 'return hl.dispatch(hl.dsp.exec_raw("dpms on '"$mon"'"))' >> "$LOGFILE" 2>&1; then
+            hyprctl dispatch dpms on "$mon" >> "$LOGFILE" 2>&1 || true
+        fi
 
         # Check if active
         if command -v jq >/dev/null 2>&1; then

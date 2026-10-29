@@ -76,4 +76,3 @@ bind("", "XF86Explorer", exec_cmd("$files"), { description = "Open file manager"
 bind("", "XF86Search", exec_cmd("$HOME/.config/hypr/UserScripts/Rofi_toggle.sh"), { description = "Toggle app launcher" })
 bind("", "XF86Tools", exec_cmd("$HOME/.config/hypr/UserScripts/Btop_toggle.sh"), { description = "Resource monitor" })
 bind("", "XF86LaunchA", exec_cmd("$HOME/.config/hypr/scripts/Dropterminal.sh alacritty"), { description = "DropDown terminal" })
-bind("ALT", "B", exec_cmd("bash $HOME/.config/hypr/scripts/PopupBrowser.sh"), { description = "Toggle documentation browser" })
