@@ -966,60 +966,60 @@ bind(
   exec_cmd("$HOME/.config/hypr/scripts/toggle-qs-hyprview.sh " .. qs_hyprview_layout),
   { description = "Hyprview Toggle", dont_inhibit = true }
 )
-bind("SUPER SHIFT", "Y", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special"), { description = "move to/from special workspace" })
-bind("SUPER", "Y", dispatch("togglespecialworkspace", ""), { description = "toggle special workspace" })
-bind("SUPER SHIFT", "U", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special:secondary"), { description = "move to/from secondary special workspace" })
-bind("SUPER", "U", dispatch("togglespecialworkspace", "special:secondary"), { description = "toggle secondary special workspace" })
-bind("SUPER SHIFT", "V", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special:tertiary"), { description = "move to/from tertiary special workspace" })
-bind("SUPER", "V", dispatch("togglespecialworkspace", "special:tertiary"), { description = "toggle tertiary special workspace" })
-bind("SUPER", "code:10", dispatch("workspace", "1"), { description = "workspace 1" })
-bind("SUPER", "code:11", dispatch("workspace", "2"), { description = "workspace 2" })
-bind("SUPER", "code:12", dispatch("workspace", "3"), { description = "workspace 3" })
-bind("SUPER", "code:13", dispatch("workspace", "4"), { description = "workspace 4" })
-bind("SUPER", "code:14", dispatch("workspace", "5"), { description = "workspace 5" })
-bind("SUPER", "code:15", dispatch("workspace", "6"), { description = "workspace 6" })
-bind("SUPER", "code:16", dispatch("workspace", "7"), { description = "workspace 7" })
-bind("SUPER", "code:17", dispatch("workspace", "8"), { description = "workspace 8" })
-bind("SUPER", "code:18", dispatch("workspace", "9"), { description = "workspace 9" })
-bind("SUPER", "code:19", dispatch("workspace", "10"), { description = "workspace 10" })
-bind("SUPER SHIFT", "code:10", dispatch("movetoworkspace", "1"), { description = "move to workspace 1" })
-bind("SUPER SHIFT", "code:11", dispatch("movetoworkspace", "2"), { description = "move to workspace 2" })
-bind("SUPER SHIFT", "code:12", dispatch("movetoworkspace", "3"), { description = "move to workspace 3" })
-bind("SUPER SHIFT", "code:13", dispatch("movetoworkspace", "4"), { description = "move to workspace 4" })
-bind("SUPER SHIFT", "code:14", dispatch("movetoworkspace", "5"), { description = "move to workspace 5" })
-bind("SUPER SHIFT", "code:15", dispatch("movetoworkspace", "6"), { description = "move to workspace 6" })
-bind("SUPER SHIFT", "code:16", dispatch("movetoworkspace", "7"), { description = "move to workspace 7" })
-bind("SUPER SHIFT", "code:17", dispatch("movetoworkspace", "8"), { description = "move to workspace 8" })
-bind("SUPER SHIFT", "code:18", dispatch("movetoworkspace", "9"), { description = "move to workspace 9" })
-bind("SUPER SHIFT", "code:19", dispatch("movetoworkspace", "10"), { description = "move to workspace 10" })
-bind("SUPER SHIFT", "bracketleft", dispatch("movetoworkspace", "-1"), { description = "move to previous workspace" })
-bind("SUPER SHIFT", "bracketright", dispatch("movetoworkspace", "+1"), { description = "move to next workspace" })
-bind("SUPER CTRL", "code:10", dispatch("movetoworkspacesilent", "1"), { description = "move silently to workspace 1" })
-bind("SUPER CTRL", "code:11", dispatch("movetoworkspacesilent", "2"), { description = "move silently to workspace 2" })
-bind("SUPER CTRL", "code:12", dispatch("movetoworkspacesilent", "3"), { description = "move silently to workspace 3" })
-bind("SUPER CTRL", "code:13", dispatch("movetoworkspacesilent", "4"), { description = "move silently to workspace 4" })
-bind("SUPER CTRL", "code:14", dispatch("movetoworkspacesilent", "5"), { description = "move silently to workspace 5" })
-bind("SUPER CTRL", "code:15", dispatch("movetoworkspacesilent", "6"), { description = "move silently to workspace 6" })
-bind("SUPER CTRL", "code:16", dispatch("movetoworkspacesilent", "7"), { description = "move silently to workspace 7" })
-bind("SUPER CTRL", "code:17", dispatch("movetoworkspacesilent", "8"), { description = "move silently to workspace 8" })
-bind("SUPER CTRL", "code:18", dispatch("movetoworkspacesilent", "9"), { description = "move silently to workspace 9" })
+bind("SUPER SHIFT", "Y", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special"), { description = "move to/from special workspace", dont_inhibit = true })
+bind("SUPER", "Y", dispatch("togglespecialworkspace", ""), { description = "toggle special workspace", dont_inhibit = true })
+bind("SUPER SHIFT", "U", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special:secondary"), { description = "move to/from secondary special workspace", dont_inhibit = true })
+bind("SUPER", "U", dispatch("togglespecialworkspace", "special:secondary"), { description = "toggle secondary special workspace", dont_inhibit = true })
+bind("SUPER SHIFT", "V", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special:tertiary"), { description = "move to/from tertiary special workspace", dont_inhibit = true })
+bind("SUPER", "V", dispatch("togglespecialworkspace", "special:tertiary"), { description = "toggle tertiary special workspace", dont_inhibit = true })
+bind("SUPER", "code:10", dispatch("workspace", "1"), { description = "workspace 1", dont_inhibit = true })
+bind("SUPER", "code:11", dispatch("workspace", "2"), { description = "workspace 2", dont_inhibit = true })
+bind("SUPER", "code:12", dispatch("workspace", "3"), { description = "workspace 3", dont_inhibit = true })
+bind("SUPER", "code:13", dispatch("workspace", "4"), { description = "workspace 4", dont_inhibit = true })
+bind("SUPER", "code:14", dispatch("workspace", "5"), { description = "workspace 5", dont_inhibit = true })
+bind("SUPER", "code:15", dispatch("workspace", "6"), { description = "workspace 6", dont_inhibit = true })
+bind("SUPER", "code:16", dispatch("workspace", "7"), { description = "workspace 7", dont_inhibit = true })
+bind("SUPER", "code:17", dispatch("workspace", "8"), { description = "workspace 8", dont_inhibit = true })
+bind("SUPER", "code:18", dispatch("workspace", "9"), { description = "workspace 9", dont_inhibit = true })
+bind("SUPER", "code:19", dispatch("workspace", "10"), { description = "workspace 10", dont_inhibit = true })
+bind("SUPER SHIFT", "code:10", dispatch("movetoworkspace", "1"), { description = "move to workspace 1", dont_inhibit = true })
+bind("SUPER SHIFT", "code:11", dispatch("movetoworkspace", "2"), { description = "move to workspace 2", dont_inhibit = true })
+bind("SUPER SHIFT", "code:12", dispatch("movetoworkspace", "3"), { description = "move to workspace 3", dont_inhibit = true })
+bind("SUPER SHIFT", "code:13", dispatch("movetoworkspace", "4"), { description = "move to workspace 4", dont_inhibit = true })
+bind("SUPER SHIFT", "code:14", dispatch("movetoworkspace", "5"), { description = "move to workspace 5", dont_inhibit = true })
+bind("SUPER SHIFT", "code:15", dispatch("movetoworkspace", "6"), { description = "move to workspace 6", dont_inhibit = true })
+bind("SUPER SHIFT", "code:16", dispatch("movetoworkspace", "7"), { description = "move to workspace 7", dont_inhibit = true })
+bind("SUPER SHIFT", "code:17", dispatch("movetoworkspace", "8"), { description = "move to workspace 8", dont_inhibit = true })
+bind("SUPER SHIFT", "code:18", dispatch("movetoworkspace", "9"), { description = "move to workspace 9", dont_inhibit = true })
+bind("SUPER SHIFT", "code:19", dispatch("movetoworkspace", "10"), { description = "move to workspace 10", dont_inhibit = true })
+bind("SUPER SHIFT", "bracketleft", dispatch("movetoworkspace", "-1"), { description = "move to previous workspace", dont_inhibit = true })
+bind("SUPER SHIFT", "bracketright", dispatch("movetoworkspace", "+1"), { description = "move to next workspace", dont_inhibit = true })
+bind("SUPER CTRL", "code:10", dispatch("movetoworkspacesilent", "1"), { description = "move silently to workspace 1", dont_inhibit = true })
+bind("SUPER CTRL", "code:11", dispatch("movetoworkspacesilent", "2"), { description = "move silently to workspace 2", dont_inhibit = true })
+bind("SUPER CTRL", "code:12", dispatch("movetoworkspacesilent", "3"), { description = "move silently to workspace 3", dont_inhibit = true })
+bind("SUPER CTRL", "code:13", dispatch("movetoworkspacesilent", "4"), { description = "move silently to workspace 4", dont_inhibit = true })
+bind("SUPER CTRL", "code:14", dispatch("movetoworkspacesilent", "5"), { description = "move silently to workspace 5", dont_inhibit = true })
+bind("SUPER CTRL", "code:15", dispatch("movetoworkspacesilent", "6"), { description = "move silently to workspace 6", dont_inhibit = true })
+bind("SUPER CTRL", "code:16", dispatch("movetoworkspacesilent", "7"), { description = "move silently to workspace 7", dont_inhibit = true })
+bind("SUPER CTRL", "code:17", dispatch("movetoworkspacesilent", "8"), { description = "move silently to workspace 8", dont_inhibit = true })
+bind("SUPER CTRL", "code:18", dispatch("movetoworkspacesilent", "9"), { description = "move silently to workspace 9", dont_inhibit = true })
 bind(
   "SUPER CTRL",
   "code:19",
   dispatch("movetoworkspacesilent", "10"),
-  { description = "move silently to workspace 10" }
+  { description = "move silently to workspace 10", dont_inhibit = true }
 )
 bind(
   "SUPER CTRL",
   "bracketleft",
   dispatch("movetoworkspacesilent", "-1"),
-  { description = "move silently to previous workspace" }
+  { description = "move silently to previous workspace", dont_inhibit = true }
 )
 bind(
   "SUPER CTRL",
   "bracketright",
   dispatch("movetoworkspacesilent", "+1"),
-  { description = "move silently to next workspace" }
+  { description = "move silently to next workspace", dont_inhibit = true }
 )
 bind("SUPER", "mouse_down", dispatch("workspace", "e+1"), { description = "next workspace" })
 bind("SUPER", "mouse_up", dispatch("workspace", "e-1"), { description = "previous workspace" })
