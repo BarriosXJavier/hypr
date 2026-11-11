@@ -496,7 +496,7 @@ bind(
   exec_cmd("$HOME/.config/hypr/scripts/hyprshot.sh -m region -o $HOME/Pictures/Screenshots"),
   { description = "Hyprshot Screen Capture" }
 )
-bind("SUPER SHIFT", "F", dispatch("fullscreen", ""), { description = "fullscreen" })
+bind("SUPER SHIFT", "F", dispatch("fullscreen", ""), { description = "fullscreen", dont_inhibit = true })
 bind("SUPER", "F", dispatch("fullscreen", "1"), { description = "maximize window" })
 bind("SUPER", "SPACE", dispatch("togglefloating", ""), { description = "Float current window" })
 bind(
@@ -515,7 +515,7 @@ bind(
   "SUPER SHIFT",
   "Return",
   exec_cmd("$HOME/.config/hypr/scripts/Dropterminal.sh kitty"),
-  { description = "DropDown terminal" }
+  { description = "DropDown terminal", dont_inhibit = true }
 )
 bind(
   "SUPER ALT",
@@ -957,14 +957,14 @@ bind(
   exec_cmd("$HOME/.config/hypr/scripts/LayoutKeybindDispatch.sh focus-down"),
   { description = "focus down (layout-aware)" }
 )
-bind("SUPER", "tab", dispatch("workspace", "m+1"), { description = "next workspace" })
-bind("SUPER SHIFT", "tab", dispatch("workspace", "m-1"), { description = "previous workspace" })
+bind("SUPER", "tab", dispatch("workspace", "m+1"), { description = "next workspace", dont_inhibit = true })
+bind("SUPER SHIFT", "tab", dispatch("workspace", "m-1"), { description = "previous workspace", dont_inhibit = true })
 local qs_hyprview_layout = "smartgrid"
 bind(
   "SUPER CTRL",
   "tab",
   exec_cmd("$HOME/.config/hypr/scripts/toggle-qs-hyprview.sh " .. qs_hyprview_layout),
-  { description = "Hyprview Toggle" }
+  { description = "Hyprview Toggle", dont_inhibit = true }
 )
 bind("SUPER SHIFT", "Y", exec_cmd("$HOME/.config/hypr/scripts/MoveWindowSpecialToggle.sh special"), { description = "move to/from special workspace" })
 bind("SUPER", "Y", dispatch("togglespecialworkspace", ""), { description = "toggle special workspace" })
